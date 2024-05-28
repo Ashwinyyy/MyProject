@@ -1,0 +1,6 @@
+[submodule "easy-random"]
+	path = easy-random
+	url = https://github.com/j-easy/easy-random.git
+[submodule "submodule"]
+	path = submodule
+	url = https://github.com/j-easy/easy-random.git
