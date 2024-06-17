@@ -1,60 +1,57 @@
 pipeline {
     agent any
     stages {
-        stage('Build') {
+        stage('Pre-build') {
             steps {
-                echo 'Building...'
-                // Add your build steps here, e.g., compile code, build artifacts, etc.
-                sh 'echo Compiling code...'
-                // Example build step
-                sh 'mvn clean install'
+                bat 'echo Pre-build'
             }
         }
-        stage('Parallel Tests') {
-            parallel {
-                stage('Unit Tests') {
-                    steps {
-                        echo 'Running Unit Tests...'
-                        // Add your unit test steps here
-                        sh 'echo Executing unit tests...'
-                        // Example unit test step
-                        sh 'mvn test -Dtest=*UnitTest'
-                    }
-                }
-                stage('Integration Tests') {
-                    steps {
-                        echo 'Running Integration Tests...'
-                        // Add your integration test steps here
-                        sh 'echo Executing integration tests...'
-                        // Example integration test step
-                        sh 'mvn verify -Dtest=*IntegrationTest'
-                    }
-                }
+        stage('Build') {
+            steps {
+                bat 'echo Build in progress.'
+            }
+        }
+        stage('Unit tests') {
+            steps {
+                bat 'echo Running unit tests'
             }
         }
         stage('Deploy') {
             steps {
-                echo 'Deploying...'
-                // Add your deploy steps here, e.g., deploying artifacts to a server
-                sh 'echo Deploying to server...'
-                // Example deploy step
-                sh 'scp target/myapp.jar user@server:/path/to/deploy'
+                bat 'echo Deploying build'
+            }
+        }
+        stage('Regression tests') {
+            parallel {
+                stage('Chrome') {
+                    steps {
+                        bat 'echo Running E2E tests on Chrome'
+                        // Add actual commands for running E2E tests on Chrome
+                    }
+                }
+                stage('Firefox') {
+                    steps {
+                        bat 'echo Running E2E tests on Firefox'
+                        // Add actual commands for running E2E tests on Firefox
+                    }
+                }
+                stage('Safari') {
+                    steps {
+                        bat 'echo Running E2E tests on Safari'
+                        // Add actual commands for running E2E tests on Safari
+                    }
+                }
+            }
+        }
+        stage('Release to prod') {
+            steps {
+                bat 'echo Releasing to prod'
             }
         }
     }
     post {
         always {
-            echo 'Cleaning up...'
-            // Add cleanup steps here, e.g., deleting temporary files
-            cleanWs()
-        }
-        success {
-            echo 'Pipeline succeeded!'
-            // Add steps to be executed on success
-        }
-        failure {
-            echo 'Pipeline failed!'
-            // Add steps to be executed on failure
+            echo 'Cleanup after everything!'
         }
     }
 }
